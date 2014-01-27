@@ -1,0 +1,8 @@
+A Verlet based approach for 2D game physics
+============================================
+
+This is a working implementation using GLUT. It is basically the same code as discussed in the article posted in the link bellow with a few optimisations and a very simple rendering and input functions.
+
+article: http://www.gamedev.net/page/resources/_/technical/math-and-physics/a-verlet-based-approach-for-2d-game-physics-r2714
+
+original code: http://uploads.gamedev.net/7cadc592ffbafcf5ec982c5551c008ea.zip
