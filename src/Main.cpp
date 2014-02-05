@@ -12,9 +12,9 @@ Physics World( 0.0f, 0.5f, 10 ); //Create a new physics instance with gravity po
 
 void Render() {
 	glClear( GL_COLOR_BUFFER_BIT ); //Clear screen
-
+	
 	World.Render(); //Draw world
-
+	
 	glFlush(); //Force rendering commands to be executed as soon as possible
 }
 
@@ -24,12 +24,12 @@ void DispatchKeyboard( unsigned char Key, int X, int Y ) { //Exit program if the
 
 void DispatchTimer( int ID ) { //Updates and renders everything at 60 FPS (or less, if the update method takes longer)
 	World.Update();
-
+	
 	Render();
-
-	if( DragVertex != 0 ) 
+	
+	if( DragVertex != 0 )
 		DragVertex->Position = Vec2( (float)MouseX, (float)MouseY ); //Sets the position of the DragVertex to the mouse position to drag it around
-
+	
 	glutTimerFunc( (int)( 1000.0f/60.0f ), DispatchTimer, 0 ); //Call this function again in 16 ms
 }
 
@@ -52,18 +52,20 @@ void DispatchMouseClick( int Button, int State, int X, int Y ) {
 }
 
 void InitPhysics() {
+	( new PhysicsBody() )->CreateCircle(GWidth / 2, GHeight / 2, 30, 8); //Create a circle
+	
 	for( int X = 20; X < GWidth; X += 100 ) {
 		for( int Y = 50; Y < GHeight - 50; Y += 100 )
 			( new PhysicsBody() )->CreateBox( X, Y, 50, 50 ); //Create a few boxes
 	}
-
+	
 	for( int X = 50; X < GWidth - 50; X += 130 ) {
 		PhysicsBody* Body = new PhysicsBody(); //Create a few triangles. Only boxes would get boring, right?
-	
+		
 		Vertex* V1 = new Vertex( Body, X      , 45 );
 		Vertex* V2 = new Vertex( Body, X +  50, 0  );
 		Vertex* V3 = new Vertex( Body, X + 100, 45 );
-	
+		
 		new Edge( Body, V1, V2 );
 		new Edge( Body, V2, V3 );
 		new Edge( Body, V3, V1 );
@@ -82,23 +84,23 @@ void InitGL() {
 
 int main( int argc, char **argv ) {
 	glutInit( &argc, argv ); //Init glut (basic window setup, callback function setup etc.)
-
+	
 	glutInitDisplayMode( GLUT_DEPTH | GLUT_SINGLE | GLUT_RGBA );
-
+	
 	glutInitWindowPosition( 100, 100 );
 	glutInitWindowSize    ( GWidth, GHeight );
-
+	
 	glutCreateWindow( "Verlet Physics Demo" );
-
+	
 	glutDisplayFunc      ( Render );
 	glutTimerFunc        ( (int)( 100.0f/60.0f ), DispatchTimer, 0 );
 	glutPassiveMotionFunc( DispatchMouseMotion );
 	glutMouseFunc        ( DispatchMouseClick );
 	glutKeyboardFunc     ( DispatchKeyboard );
-
+	
 	InitGL(); //Init OGL and physics
 	InitPhysics();
-
+	
 	glutMainLoop(); //Everything's set up - let's enter the mainloop, yay!
 	
 	return 0;
