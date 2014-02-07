@@ -99,8 +99,8 @@ bool Physics::DetectCollision( PhysicsBody* B1, PhysicsBody* B2 ) {
 		
 		if( Distance > 0.0f ) //If the intervals don't overlap, return, since there is no collision
 			return false;
-		else if( abs( Distance ) < MinDistance ) {
-			MinDistance = abs( Distance );
+		else if( Distance > -MinDistance ) {
+			MinDistance = -Distance;
 			
 			CollisionInfo.Normal = Axis; //Save collision information for later
 			CollisionInfo.E      = E;    //Store the edge, as it is the collision edge
@@ -138,21 +138,21 @@ bool Physics::DetectCollision( PhysicsBody* B1, PhysicsBody* B2 ) {
 }
 
 void Physics::ProcessCollision() {
-	Vertex* E1 = CollisionInfo.E->V1;
-	Vertex* E2 = CollisionInfo.E->V2;
+	Vertex* V1 = CollisionInfo.E->V1;
+	Vertex* V2 = CollisionInfo.E->V2;
 	
 	Vec2 CollisionVector = CollisionInfo.Normal*CollisionInfo.Depth;
 	
 	float T;
-	if( abs( E1->Position.X - E2->Position.X ) > abs( E1->Position.Y - E2->Position.Y ) )
-		T = ( CollisionInfo.V->Position.X - CollisionVector.X - E1->Position.X )/(  E2->Position.X - E1->Position.X );
+	if( abs( V1->Position.X - V2->Position.X ) > abs( V1->Position.Y - V2->Position.Y ) )
+		T = ( CollisionInfo.V->Position.X - CollisionVector.X - V1->Position.X )/(  V2->Position.X - V1->Position.X );
 	else
-		T = ( CollisionInfo.V->Position.Y - CollisionVector.Y - E1->Position.Y )/(  E2->Position.Y - E1->Position.Y );
+		T = ( CollisionInfo.V->Position.Y - CollisionVector.Y - V1->Position.Y )/(  V2->Position.Y - V1->Position.Y );
 	
 	float Lambda = 1.0f/( T*T + ( 1 - T )*( 1 - T ) );
 	
-	E1->Position -= CollisionVector*( 1 - T )*0.5f*Lambda;
-	E2->Position -= CollisionVector*      T  *0.5f*Lambda;
+	V1->Position -= CollisionVector*( 1 - T )*0.5f*Lambda;
+	V2->Position -= CollisionVector*      T  *0.5f*Lambda;
 	
 	CollisionInfo.V->Position += CollisionVector*0.5f;
 }
